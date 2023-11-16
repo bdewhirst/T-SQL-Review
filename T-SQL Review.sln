@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "T-SQL Review", "T-SQL Review\T-SQL Review.sqlproj", "{65B5D5CB-5D54-496B-B201-31C160877EEE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65B5D5CB-5D54-496B-B201-31C160877EEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65B5D5CB-5D54-496B-B201-31C160877EEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65B5D5CB-5D54-496B-B201-31C160877EEE}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{65B5D5CB-5D54-496B-B201-31C160877EEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65B5D5CB-5D54-496B-B201-31C160877EEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65B5D5CB-5D54-496B-B201-31C160877EEE}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F61D8C2C-C9BF-44C6-AB50-45941CCE5A62}
+	EndGlobalSection
+EndGlobal
