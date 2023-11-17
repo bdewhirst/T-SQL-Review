@@ -6,4 +6,5 @@ As almost all of my SQL work to date has been in a work context, this repo is me
 
 
 ## references to review further:
-- https://marklowg.medium.com/creating-sql-server-re-runnable-scripts-b73da6bdf8f9 (e.g., 'information_schema.constraints')
+- (see 'information_schema.constraints') https://marklowg.medium.com/creating-sql-server-re-runnable-scripts-b73da6bdf8f9 
+- more options for dropping tables for reentrant scripts (important for older versions of T-SQL) https://www.mssqltips.com/sqlservertip/6769/sql-server-drop-table-if-exists/
