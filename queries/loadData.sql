@@ -37,6 +37,13 @@ from banksStaging
 group by stateCode
 order by stateCode;
 
+-- "publish" this table and delete staging table.
+drop table if exists banks;
+select * 
+into banks
+from banksStaging;
+drop table banksStaging;
+
 drop table if exists stateAbbrs;
 create table stateAbbrs (
   stateCode char(2),
@@ -101,3 +108,54 @@ values
 ('WV','	West Virginia'),
 ('WI','	Wisconsin'),
 ('WY','	Wyoming');
+
+-- not quite right:
+select 
+  stateAbbrs.stateCode, 
+  stateAbbrs.stateName, 
+  count(distinct coalesce(banks.bankName, '')) as banksQ
+from stateAbbrs
+left join banks on stateAbbrs.stateCode = banks.stateCode
+where 1=1
+  -- and certNo is not null
+group by stateAbbrs.stateCode, stateAbbrs.stateName
+order by count(distinct coalesce(bankName, '')) desc;
+
+
+select 
+  stateAbbrs.stateName, 
+  count(distinct bankName) as banksQ
+from banks
+full outer join stateAbbrs on stateAbbrs.stateCode = banks.stateCode
+where 1=1
+  -- and certNo is not null
+group by  stateAbbrs.stateName
+order by count(distinct coalesce(bankName, '')) desc;
+
+
+-- follow more of original intent, and set up for next query:
+drop table if exists #failedBankByStatelike;
+select 
+  stateAbbrs.stateName, 
+  count(distinct bankName) as banksQ
+into #failedBankByStatelike
+from banks
+right join stateAbbrs on stateAbbrs.stateCode = banks.stateCode
+where 1=1
+group by  stateAbbrs.stateName
+order by count(distinct coalesce(bankName, '')) desc;
+
+select * from #failedBankByStatelike
+where banksQ = 0;
+
+-- or, as a left join, with max and min dates:
+select 
+  stateAbbrs.stateName, 
+  count(distinct bankName) as banksQ,
+  max(closeDate) as maxCloseDate,
+  min(closeDate) as minCloseDate
+from stateAbbrs 
+left join banks on stateAbbrs.stateCode = banks.stateCode
+where 1=1
+group by  stateAbbrs.stateName
+order by count(distinct coalesce(bankName, '')) desc;
