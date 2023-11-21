@@ -1,7 +1,7 @@
 -- Brian Dewhirst, 2023-11-17
 -- ref: https://blog.skyvia.com/3-easy-ways-to-import-csv-file-to-sql-server/
 --
--- yes, whether you can do this in a 'real' database depends heavily on having access to the underlying server (AFAIK)
+-- yes, whether you can do this in a 'real' database depends heavily on having access to the underlying server (AFAIK, though Azure seems to open some options)
 -- ... but if we're discussing loading data, that discussion would likely include specialized tools and Data Engineers/Data Engineering job orgs.
 --
 -- TLDR, the data is an official failed banks list.
