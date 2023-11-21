@@ -1,44 +1,68 @@
 -- Brian Dewhirst, 2023-11-21
---
--- sourced data is from data.bls.gov, sourced 2023-11-21 from https://data.bls.gov/projections/occupationProj)
---
--- given the data selected, this will likely involve some data cleanup first
-
--- Create table of data to analyze:
+-- (yes, this is trivial data-- not meant to be a data wrangling exercise)
+-- see loadData for how the (failed) bank table dataset was generated
 
 use newDB;
 
-drop table if exists employmentProjection;
-create table employmentProjection (
-  occupationTitle varchar(600) not null
-, occupationCode varchar(7) not null
-, employment2022 DECIMAL
-, employment2023 DECIMAL
-, employmentChange2022_2032 DECIMAL
-, employmentPercentChange2022_2032 DECIMAL
-, occupationalOpeningsAnnualAverage2022_2032 DECIMAL
---, medianAnnualWage2022 DECIMAL -- missing values
-, typicalEntryLevelEducation varchar(20)
-, educationCode smallint
-, workExperienceinaRelatedOccupation varchar(63)
-, workexCode smallint
-, typicalontheJobTraining varchar(63)
-, trCode smallint
-);
+-- Create view of that table (run once, by itself)
+--drop view vBanks;
+--create view vBanks as
+--  select
+--    stateCode,
+--    cast(count(*) as DECIMAL(7,2)) as failQ
+--  from banks
+--  group by stateCode;
 
-bulk insert employmentProjection
-from 'C:\Users\Brian\source\repos\T-SQL Review\data\EmploymentProjections.tsv'  -- did some data cleaning
-with (
-    format='CSV',
-    FIELDTERMINATOR='\t',
-    FIRSTROW=2,
-    ROWTERMINATOR = '\n',
-    FIELDQUOTE = '"'  
-);
-select count(*) from employmentProjection;
-select top 10 * from employmentProjection;
+select * from vBanks;  -- for offline manual checks, reference, etc.
 
--- replace '-1' values with null
+-- mean
+select 
+  round(sum(failQ) / count(*),2) as mean_rounded,
+  sum(failQ) / count(*) as mean
+from vBanks;
+
+-- percentile rank (not a measure of central tendency, but related)
+select failQ, percent_rank() over(order by failQ) as decile
+from vBanks;
+
+-- median and IQR, etc.
+select distinct
+  min(failQ) over() as min_,
+  percentile_cont(0.25) within group(order by failQ) over() as lower_quartile,
+  percentile_cont(0.5) within group(order by failQ) over() as median,
+  percentile_cont(0.75) within group(order by failQ) over() as upper_quartile,
+  max(failQ) over() as max_,
+  percentile_cont(0.75) within group(order by failQ) over() - percentile_cont(0.25) within group(order by failQ) over() as IQR
+from vBanks;
 
 
--- Create view of that table
+-- it is often better to determine the mode by examining graphically-- let's assume past experience says it is 'okay' to measure it algorithmicly
+-- ...
+select
+  failQ, 
+  count(*) as instances
+into #mode_tmp
+from vBanks
+group by failQ
+order by instances desc;
+
+select top 1 -- for multi-modal distributions, this would be top (N), however this is fragile without more logic (e.g. there are four and five-way ties for "2nd" and "3rd")
+failQ as mode
+from #mode_tmp;
+
+drop table #mode_tmp;
+
+-- aside: this is a skewed distribution, and there are measures of that we could probably include/implement
+
+-- mean and standard deviation
+select 
+ avg(failQ) as mean,
+-- STDEV  -- for samples
+ STDEVP(failQ) as stddev_population
+from vBanks;
+
+
+
+-- trimmed mean
+
+-- introduce ad-hoc "region" and take distribtions over that region; also review CTEs
